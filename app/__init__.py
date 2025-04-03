@@ -5,7 +5,7 @@ from flask_bootstrap import Bootstrap
 from .forms import LoginForm, RegisterForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from .db_models import db, User, Item
+from .db_models import db, User, Item, Review
 from itsdangerous import URLSafeTimedSerializer
 from .funcs import mail, send_confirmation_email, fulfill_order
 from dotenv import load_dotenv
@@ -236,3 +236,31 @@ def stripe_webhook():
 
 	# Passed signature verification
 	return {}, 200
+
+@app.route('/submit-review', methods=['POST'])
+def submit_review():
+    try:
+        # Get form data
+        user_name = request.form.get('name')
+        review_text = request.form.get('review')
+        rating = request.form.get('rating')
+        item_id = request.form.get('item_id')  # Hidden field to get item ID
+
+        # Assume the user exists (modify this logic as per authentication)
+        user = User.query.filter_by(name=user_name).first()
+        if not user:
+            flash("User not found!", "error")
+            return redirect(url_for('home'))
+
+        # Create a new review instance
+        new_review = Review(user_id=user.id, item_id=item_id, review_text=review_text, rating=int(rating))
+        db.session.add(new_review)
+        db.session.commit()
+
+        flash("Review submitted successfully!", "success")
+        return redirect(url_for('item', id=item_id))  # Redirect back to the item page
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error submitting review: {str(e)}", "error")
+        return redirect(url_for('home'))
