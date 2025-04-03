@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}
+	{{ item.name }} - Flask-O-shop
+{% endblock %}
+
+{% block content %}
+	{% with msgs =  get_flashed_messages(with_categories=True) %}
+	{% for c, msg in msgs %}
+		{% if c == 'error' %}
+			<div class="flash-error">
+		{% else %}
+			<div class="success">
+		{% endif %}
+			{{ msg | safe}}</div><br>
+	{% endfor %}
+	{% endwith %}
+
+			<div class="item-display">
+				<div class="img-wrapper">
+					<img src="{{ item.image }}" class="pic">
+				</div>
+				<b>{{ item.name }}</b>
+				<span class="right-item">${{ item.price }}</span><br>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <span class="text-muted" >({{ range(1, 51) | random }})</span>
+                <div class="details">{{ item.details | safe }}</div>
+
+                <form action="{{ url_for('add_to_cart', id=item.id) }}" method="POST">
+                    Quantity: 
+                    <input type="number" value="1" name="quantity" min="1" max="50" onkeyup="if(this.value > 50) this.value=50;" required>
+                    <br><br>
+					<input type="submit" class="add-to-cart" value="Add to Cart" name="add">
+                </form>
+
+
+				 <div class="review-form mt-5">
+                <h4 class="text-center">Leave a Review</h4>
+                <form id="reviewForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Your Name</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="review" class="form-label">Your Review</label>
+                        <textarea id="review" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-2 text-center">
+                        <label class="d-block mb-1">Rate this product:</label>
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" name="rating" id="star1" value="1" checked>
+                            <label class="btn btn-outline-warning" for="star1">1 ★</label>
+
+                            <input type="radio" class="btn-check" name="rating" id="star2" value="2">
+                            <label class="btn btn-outline-warning" for="star2">2 ★</label>
+
+                            <input type="radio" class="btn-check" name="rating" id="star3" value="3">
+                            <label class="btn btn-outline-warning" for="star3">3 ★</label>
+
+                            <input type="radio" class="btn-check" name="rating" id="star4" value="4">
+                            <label class="btn btn-outline-warning" for="star4">4 ★</label>
+
+                            <input type="radio" class="btn-check" name="rating" id="star5" value="5">
+                            <label class="btn btn-outline-warning" for="star5">5 ★</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+                </form>
+            </div>
+			</div>
+            </div>
+{% endblock %}
