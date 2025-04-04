@@ -1,49 +1,44 @@
 {% extends "admin/base.html" %}
 
 {% block title %}
-	Admin Dashboard - Flask-O-shop
+    Admin Dashboard - Ecommerce Website
 {% endblock %}
-<script src="https://js.stripe.com/v3/"></script>
+
 {% block content %}
-	{% with msgs =  get_flashed_messages(with_categories=True) %}
-	{% for c, msg in msgs %}
-		{% if c == 'error' %}
-			<div class="flash-error">
-		{% else %}
-			<div class="success">
-		{% endif %}
-			{{ msg }}</div><br>
-	{% endfor %}
-	{% endwith %}
+    {% with msgs = get_flashed_messages(with_categories=True) %}
+        {% for c, msg in msgs %}
+            <div class="{{ 'flash-error' if c == 'error' else 'success' }}">
+                {{ msg }}
+            </div><br>
+        {% endfor %}
+    {% endwith %}
 
-    {% if not orders %}
-		<div class="flash-error">No orders have been placed yet.</div>
-	{% else %}
-    
-    <table class="table table-striped">
-        <tr>
-            <th>Order id</th>
-            <th>Order date</th>
-			<th>Ordered items</th>
-			<th>Order status</th>
-			<th>Operations</th>
-        </tr>
-    {% for order in orders %}
-        <tr>
-            <td>{{ order.id }}</td>
-            <td>{{ order.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-			<td>
-				{% for i in order.items %}
-				{{ i.item.name }} x <span class="success">{{ i.quantity }}</span><br>
-				{% endfor %}
-			</td>
-			<td>{{ order.status }}</td>
-			<td>
-				<a href="{{ url_for('admin.edit', type='order', id=order.id) }}">&#9998;</a>
-			</td>
-        </tr>
-    {% endfor %}
-    </table>
+    <h3 class="text-center mt-4">Review Analysis Chart</h3>
+    <canvas id="reviewChart" width="400" height="400"></canvas>
 
-	{% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('reviewChart').getContext('2d');
+        const reviewChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Fake Reviews', 'Original Reviews'],
+                datasets: [{
+                    data: [
+                        {{ reviews | selectattr("result", "equalto", "Fake") | list | length }},
+                        {{ reviews | selectattr("result", "equalto", "Original") | list | length }}
+                    ],
+                    backgroundColor: ['#dc3545', '#28a745']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
 {% endblock %}

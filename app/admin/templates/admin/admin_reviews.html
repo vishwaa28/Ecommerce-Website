@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Admin - Reviews{% endblock %}
+
+{% block content %}
+<h2 class="text-center">All Product Reviews</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>User ID</th>
+            <th>Item ID</th>
+            <th>Review</th>
+            <th>Rating</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for review in reviews %}
+        <tr>
+            <td>{{ review.id }}</td>
+            <td>{{ review.user_id }}</td>
+            <td>{{ review.item_id }}</td>
+            <td>{{ review.review_text }}</td>
+            <td>{{ review.rating }} ★</td>
+            <td>{{ review.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
