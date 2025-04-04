@@ -15,17 +15,26 @@
 
     <h3 class="text-center mt-4">Review Analysis</h3>
 
-    <div class="row">
+    <div class="row mt-4">
         <!-- Fake vs Original Pie Chart -->
-        <div class="col-md-6 d-flex justify-content-center">
-            <canvas id="reviewChart" width="300" height="300"></canvas>
+        <div class="col-md-6">
+            <div class="card shadow-lg p-10">
+                <h5 class="card-title text-center">Fake vs Original Reviews</h5>
+                <div class="d-flex justify-content-center">
+                    <canvas id="reviewChart" width="300" height="300"></canvas>
+                </div>
+            </div>
         </div>
 
         <!-- Sentiment Analysis Bar Chart -->
-        <div class="col-md-6 d-flex justify-content-center">
-            <canvas id="sentimentChart" width="300" height="300"></canvas>
+        <div class="col-md-6">
+            <div class="card shadow-lg p-10">
+                <h5 class="card-title text-center">Sentiment Analysis</h5>
+                <div class="d-flex justify-content-center">
+                    <canvas id="sentimentChart" width="300" height="300"></canvas>
+                </div>
+            </div>
         </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -40,7 +49,7 @@
                         {{ reviews | selectattr("result", "equalto", "Fake") | list | length }},
                         {{ reviews | selectattr("result", "equalto", "Original") | list | length }}
                     ],
-                    backgroundColor: ['#dc3545', '#28a745']
+                    backgroundColor: ['#fc785b', '#a4fc5b']
                 }]
             },
             options: {
@@ -63,7 +72,7 @@
                         {{ reviews | selectattr("sentiment", "equalto", "Positive") | list | length }},
                         {{ reviews | selectattr("sentiment", "equalto", "Negative") | list | length }}
                     ],
-                    backgroundColor: ['#28a745', '#dc3545']
+                    backgroundColor: ['#a4fc5b', '#fc785b']
                 }]
             },
             options: {
