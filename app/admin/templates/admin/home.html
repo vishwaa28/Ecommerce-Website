@@ -13,13 +13,25 @@
         {% endfor %}
     {% endwith %}
 
-    <h3 class="text-center mt-4">Review Analysis Chart</h3>
-    <canvas id="reviewChart" width="400" height="400"></canvas>
+    <h3 class="text-center mt-4">Review Analysis</h3>
+
+    <div class="row">
+        <!-- Fake vs Original Pie Chart -->
+        <div class="col-md-6 d-flex justify-content-center">
+            <canvas id="reviewChart" width="300" height="300"></canvas>
+        </div>
+
+        <!-- Sentiment Analysis Bar Chart -->
+        <div class="col-md-6 d-flex justify-content-center">
+            <canvas id="sentimentChart" width="300" height="300"></canvas>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const ctx = document.getElementById('reviewChart').getContext('2d');
-        const reviewChart = new Chart(ctx, {
+        // Fake vs Original Reviews (Pie Chart)
+        const reviewCtx = document.getElementById('reviewChart').getContext('2d');
+        new Chart(reviewCtx, {
             type: 'pie',
             data: {
                 labels: ['Fake Reviews', 'Original Reviews'],
@@ -34,9 +46,30 @@
             options: {
                 responsive: true,
                 plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // Sentiment Analysis (Bar Chart)
+        const sentimentCtx = document.getElementById('sentimentChart').getContext('2d');
+        new Chart(sentimentCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Positive', 'Negative'],
+                datasets: [{
+                    label: 'Sentiment Analysis',
+                    data: [
+                        {{ reviews | selectattr("sentiment", "equalto", "Positive") | list | length }},
+                        {{ reviews | selectattr("sentiment", "equalto", "Negative") | list | length }}
+                    ],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
                 }
             }
         });

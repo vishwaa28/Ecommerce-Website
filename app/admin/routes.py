@@ -22,6 +22,7 @@ fake_review_model = pickle.load(open("app/admin/ML_model.pkl", "rb"))
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 bert_model = BertModel.from_pretrained('bert-base-uncased')
 
+
 def preprocess_text(text):
     text = re.sub(r'[^a-zA-Z]', ' ', text)
     text = text.lower()
@@ -29,14 +30,14 @@ def preprocess_text(text):
     tokens = [word for word in tokens if word not in stopwords.words('english')]
     return ' '.join(tokens)
 
+
 def get_bert_embedding(text):
     inputs = tokenizer(text, return_tensors="pt", max_length=512, truncation=True, padding=True)
     outputs = bert_model(**inputs)
     return outputs.last_hidden_state.mean(dim=1).detach().numpy()
 
-def analyze_review(review):
-    review_text = review.review_text
-    rating = review.rating
+
+def analyze_review(review_text, rating):
     cleaned = preprocess_text(review_text)
     text_len = len(cleaned.split())
     capital_ratio = sum(1 for c in review_text if c.isupper()) / max(len(review_text), 1)
@@ -45,25 +46,39 @@ def analyze_review(review):
 
     embedding = get_bert_embedding(cleaned)
     extra_features = np.array([rating, text_len, capital_ratio, punctuation_count, has_exclamations])
-    features = np.concatenate((embedding.flatten(), extra_features)).reshape(1, -1)
+    features = np.hstack((embedding, extra_features.reshape(1, -1)))
 
     is_fake = fake_review_model.predict(features)[0]
-    return "Fake" if is_fake == 1 else "Original"
+
+    if is_fake == 1:
+        return "Fake", None
+    else:
+        sentiment = 1 if rating > 2 else 0  # Basic sentiment analysis using rating
+        return "Original", "Positive" if sentiment == 1 else "Negative"
+
 
 @admin.route("/admin/reviews")
-# @admin_only  # Uncomment this line if admin_only decorator is defined
 def admin_reviews():
     reviews = Review.query.all()
     return render_template("admin/admin_reviews.html", reviews=reviews)
 
+
 @admin.route("/")
-# @admin_only  # Uncomment this line if admin_only decorator is defined
 def dashboard():
     reviews = Review.query.all()
     analyzed_reviews = []
+
     for review in reviews:
-        result = analyze_review(review)
-        analyzed_reviews.append(result)
+        result, sentiment = analyze_review(review.review_text, review.rating)
+        analyzed_reviews.append({
+            "user": review.user_id,
+            "item": review.item_id,
+            "text": review.review_text,
+            "rating": review.rating,
+            "result": result,
+            "sentiment": sentiment
+        })
+
     return render_template("admin/home.html", reviews=analyzed_reviews)
 
 # @admin.route('/')
