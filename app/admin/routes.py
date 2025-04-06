@@ -53,14 +53,29 @@ def analyze_review(review_text, rating):
     if is_fake == 1:
         return "Fake", None
     else:
-        sentiment = 1 if rating > 2 else 0  # Basic sentiment analysis using rating
+        sentiment = 1 if rating > 2 else 0
         return "Original", "Positive" if sentiment == 1 else "Negative"
 
 
 @admin.route("/admin/reviews")
 def admin_reviews():
     reviews = Review.query.all()
-    return render_template("admin/admin_reviews.html", reviews=reviews)
+    analyzed_reviews = []
+
+    for review in reviews:
+        result, sentiment = analyze_review(review.review_text, review.rating)
+        analyzed_reviews.append({
+            "id": review.id,
+            "user": review.user_id,
+            "item": review.item_id,
+            "text": review.review_text,
+            "rating": review.rating,
+            "created_at": review.created_at,
+            "result": result,
+            "sentiment": sentiment
+        })
+
+    return render_template("admin/admin_reviews.html", all_reviews=analyzed_reviews)
 
 
 @admin.route("/")
@@ -71,15 +86,17 @@ def dashboard():
     for review in reviews:
         result, sentiment = analyze_review(review.review_text, review.rating)
         analyzed_reviews.append({
+            "id": review.id,
             "user": review.user_id,
             "item": review.item_id,
             "text": review.review_text,
             "rating": review.rating,
+            "created_at": review.created_at,
             "result": result,
             "sentiment": sentiment
         })
 
-    return render_template("admin/home.html", reviews=analyzed_reviews)
+    return render_template("admin/home.html", analyzed_reviews=analyzed_reviews)
 
 # @admin.route('/')
 # @admin_only

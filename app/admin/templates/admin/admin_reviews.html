@@ -13,19 +13,24 @@
             <th>Review</th>
             <th>Rating</th>
             <th>Created At</th>
+            <th>Fake Review</th>
+            <th>Sentiment</th>
         </tr>
     </thead>
     <tbody>
-        {% for review in reviews %}
+        {% for review in all_reviews %}
         <tr>
             <td>{{ review.id }}</td>
-            <td>{{ review.user_id }}</td>
-            <td>{{ review.item_id }}</td>
-            <td>{{ review.review_text }}</td>
+            <td>{{ review.user }}</td>
+            <td>{{ review.item }}</td>
+            <td>{{ review.text }}</td>
             <td>{{ review.rating }} ★</td>
             <td>{{ review.created_at }}</td>
+            <td><span class="badge bg-{{ 'danger' if review.result == 'Fake' else 'success' }}">{{ review.result }}</span></td>
+            <td>{{ review.sentiment }}</td>
         </tr>
         {% endfor %}
+
     </tbody>
 </table>
 {% endblock %}
