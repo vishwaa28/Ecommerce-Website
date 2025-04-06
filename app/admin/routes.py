@@ -12,7 +12,8 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from transformers import BertTokenizer, BertModel
 import string
-
+from collections import defaultdict
+import calendar
 
 admin = Blueprint("admin", __name__, url_prefix="/admin", static_folder="static", template_folder="templates")
 
@@ -82,9 +83,19 @@ def admin_reviews():
 def dashboard():
     reviews = Review.query.all()
     analyzed_reviews = []
+    monthly_review_data = defaultdict(int)
+    user_sentiment_counts = defaultdict(lambda: {'Positive': 0, 'Negative': 0})
 
     for review in reviews:
         result, sentiment = analyze_review(review.review_text, review.rating)
+        month_name = review.created_at.strftime('%b')  # 'Jan', 'Feb', etc.
+        monthly_review_data[month_name] += 1
+        if review.user is None:
+            continue
+        username = review.user.name  # using user.name from your User model
+        chart_sentiment = review.sentiment if hasattr(review, 'sentiment') else 'Unknown'
+        if chart_sentiment in ['Positive', 'Negative']:
+            user_sentiment_counts[username][chart_sentiment] += 1
         analyzed_reviews.append({
             "id": review.id,
             "user": review.user_id,
@@ -95,8 +106,15 @@ def dashboard():
             "result": result,
             "sentiment": sentiment
         })
-
-    return render_template("admin/home.html", analyzed_reviews=analyzed_reviews)
+    all_months = {month: monthly_review_data.get(month, 0) for month in calendar.month_abbr if month}
+    # Extract lists for charting
+    user_labels = list(user_sentiment_counts.keys())
+    user_pos = [user_sentiment_counts[user]['Positive'] for user in user_labels]
+    user_neg = [user_sentiment_counts[user]['Negative'] for user in user_labels]
+    return render_template("admin/home.html", analyzed_reviews=analyzed_reviews,monthly_data=all_months,
+                        user_labels=user_labels,
+                       user_pos=user_pos,
+                       user_neg=user_neg)
 
 # @admin.route('/')
 # @admin_only

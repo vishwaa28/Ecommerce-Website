@@ -73,8 +73,8 @@
             </div>
             <div class="col-lg-6">
                 <div class="card shadow-lg rounded-4 p-4">
-                    <h5 class="card-title text-center mb-4">📊 Gauge - Overall Positive Sentiment</h5>
-                    <canvas id="gaugeChart" height="300"></canvas>
+                    <h5 class="card-title text-center mb-4">📊 User Sentiment Chart</h5>
+                    <canvas id="userSentimentChart" height="300"></canvas>
                 </div>
             </div>
         </div>
@@ -88,6 +88,12 @@
         const originalCount = {{ analyzed_reviews | selectattr("result", "equalto", "Original") | list | length }};
         const posSent = {{ analyzed_reviews | selectattr("sentiment", "equalto", "Positive") | list | length }};
         const negSent = {{ analyzed_reviews | selectattr("sentiment", "equalto", "Negative") | list | length }};
+        const monthLabels = {{ monthly_data.keys() | list | tojson }};
+const monthCounts = {{ monthly_data.values() | list | tojson }};
+const userLabels = {{ user_labels | tojson }};
+const userPos = {{ user_pos | tojson }};
+const userNeg = {{ user_neg | tojson }};
+
 
         // Pie Chart - Fake vs Original
         new Chart(document.getElementById('reviewChart').getContext('2d'), {
@@ -125,50 +131,65 @@
 
         // Trend Chart - Monthly Reviews (Dummy Monthly Data)
         new Chart(document.getElementById('trendChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Total Reviews',
-                    data: [1000, 1200, 1300, 1100, 1500, 1400],
-                    borderColor: '#6741d9',
-                    backgroundColor: 'rgba(103, 65, 217, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
+    type: 'line',
+    data: {
+        labels: monthLabels,
+        datasets: [{
+            label: 'Total Reviews',
+            data: monthCounts,
+            borderColor: '#6741d9',
+            backgroundColor: 'rgba(103, 65, 217, 0.1)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+    }
+});
 
-        // Gauge-like Doughnut Chart
-        new Chart(document.getElementById('gaugeChart').getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Positive', 'Remaining'],
-                datasets: [{
-                    data: [posSent, total - posSent],
-                    backgroundColor: ['#51cf66', '#dee2e6'],
-                    borderWidth: 0
-                }]
+
+        //new chart
+         const ctx = document.getElementById('userSentimentChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: userLabels,
+            datasets: [
+                {
+                    label: 'Positive Reviews',
+                    data: userPos,
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                },
+                {
+                    label: 'Negative Reviews',
+                    data: userNeg,
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: {
+                    display: true,
+                    text: 'User-wise Sentiment Analysis'
+                }
             },
-            options: {
-                rotation: -90,
-                circumference: 180,
-                cutout: '80%',
-                plugins: {
-                    legend: { display: false },
-                    doughnutlabel: {
-                        labels: [{
-                            text: Math.round((posSent / total) * 100) + '%',
-                            font: { size: '20' },
-                            color: '#343a40'
-                        }]
-                    }
+            scales: {
+                x: {
+                    stacked: true,
+                    title: { display: true, text: 'Users' }
+                },
+                y: {
+                    stacked: true,
+                    title: { display: true, text: 'Number of Reviews' }
                 }
             }
-        });
+        }
+    });
     </script>
 {% endblock %}
