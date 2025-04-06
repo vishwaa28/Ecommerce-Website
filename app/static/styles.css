@@ -1,18 +1,39 @@
+body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background-color: #f5f5f5;
+	color: #333;
+	margin: 0;
+	padding: 0;
+}
+
 .main {
 	padding: 10vh 0;
 }
 
+a {
+	color: inherit;
+	text-decoration: none;
+	transition: color 0.3s ease-in-out;
+}
+
 a:hover {
 	text-decoration: none;
+	color: #007bff;
 }
 
 .navbar {
-	padding: .7rem 6rem;
-	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19);
+	background-color: white;
+	padding: 1rem 6rem;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	position: sticky;
+	top: 0;
+	z-index: 1000;
 }
 
 footer {
-	box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.2), 1px 0 5px 0 rgba(0, 0, 0, 0.19);
+	background: white;
+	padding: 1rem 6rem;
+	box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .forms, .flash-error, .success {
@@ -23,44 +44,56 @@ footer {
 form .btn {
 	background: #007bff;
 	color: white;
-	border-radius: 5px;
+	border-radius: 6px;
+	padding: 10px 15px;
+	border: none;
+	transition: background 0.3s;
+}
+
+form .btn:hover {
+	background: #0056b3;
 }
 
 .flash-error, .help-block, .success {
 	text-align: center;
-	padding: 5px;
-	font-weight:bold;
+	padding: 10px;
+	font-weight: bold;
+	border-radius: 4px;
 }
 
 .flash-error, .help-block {
-	color: red;
+	color: #c82333;
+	background-color: #f8d7da;
 }
 
 .success {
-	color:green;
+	color: #155724;
+	background-color: #d4edda;
 }
 
 .items {
-	max-width: 900px;
+	max-width: 1200px;
 	margin: 0 auto;
-	display: flex;
-	justify-content: space-around;
-	flex-wrap: wrap;
-	gap: 70px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 40px;
+	padding: 2rem;
 }
 
 .item {
-	width:250px;
-	padding: 12px;
-	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19);
-	border-radius: 5px;
+	background: white;
+	padding: 15px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+	cursor: pointer;
 }
 
 .item:hover {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	transform: translateY(-5px);
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
 .item-display {
@@ -69,25 +102,38 @@ form .btn {
 }
 
 .add-to-cart {
-	background-color: green;
+	background-color: #28a745;
 }
 
 .remove-from-cart {
-	background-color: red;
+	background-color: #dc3545;
 }
 
 .add-to-cart, .remove-from-cart {
 	width: 100%;
 	border: none;
 	color: white;
-	padding: 5px;
+	padding: 10px;
 	border-radius: 5px;
 	cursor: pointer;
+	font-weight: bold;
+	transition: background-color 0.3s;
+}
+
+.add-to-cart:hover {
+	background-color: #218838;
+}
+
+.remove-from-cart:hover {
+	background-color: #c82333;
 }
 
 .pic {
-	width:150px;
-	height: 150px;
+	width: 100%;
+	height: 180px;
+	object-fit: contain;
+	margin-bottom: 10px;
+	border-radius: 5px;
 }
 
 .img-wrapper {
@@ -97,41 +143,186 @@ form .btn {
 }
 
 .right-item {
-	float:right;
-	color:green;
+	float: right;
+	color: green;
+	font-weight: bold;
 }
 
 .check {
 	max-width: 300px;
-	margin: 0 auto;
-	margin-top: 50px;
+	margin: 50px auto;
 	font-weight: bold;
 }
 
 .checkout {
-	cursor:pointer;
-	padding: 5px;
-	border-radius:5px;
+	cursor: pointer;
+	padding: 10px;
+	border-radius: 6px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	font-weight: bold;
+	transition: background-color 0.3s ease;
+}
+
+.checkout:hover {
+	background-color: #0056b3;
 }
 
 .details {
-	padding: 15px 0;
+	padding: 10px 0;
+	font-size: 0.9rem;
+	color: #555;
 }
 
 .checked {
-	color: orange;
+	color: #f0ad4e;
 }
 
-@media only screen and (max-width: 600px) {
+.product-details {
+	background: white;
+	border-radius: 10px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	margin: 20px auto;
+	padding: 20px;
+	width: 320px;
+}
+
+@media only screen and (max-width: 768px) {
 	.navbar {
-		padding: .3rem 1rem;
+		padding: 1rem;
+	}
+
+	.items {
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		padding: 1rem;
 	}
 }
-.product-details {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            margin: 20px auto;
-            padding: 20px;
-            width: 300px;
-        }
+/* --- Review Form --- */
+.review-form {
+	margin-top: 40px;
+	background: #f9f9f9;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.review-form h4 {
+	font-weight: 600;
+	color: #333;
+	margin-bottom: 20px;
+}
+
+.review-form .form-control {
+	border-radius: 6px;
+	box-shadow: none;
+	border: 1px solid #ccc;
+}
+
+.review-form .btn-outline-warning {
+	border-radius: 20px;
+	padding: 6px 14px;
+	font-weight: 500;
+}
+
+.review-form .btn-primary {
+	margin-top: 15px;
+	border-radius: 6px;
+	font-weight: bold;
+	background: #007bff;
+	border: none;
+}
+
+.review-form .btn-primary:hover {
+	background-color: #0056b3;
+}
+
+/* --- Reviews --- */
+.reviews {
+	margin-top: 40px;
+}
+
+.reviews h4 {
+	font-weight: bold;
+	margin-bottom: 20px;
+	color: #222;
+}
+
+.review-card {
+	background-color: #fff;
+	padding: 15px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+	margin-bottom: 20px;
+}
+
+.review-card strong {
+	font-size: 1.1rem;
+	color: #333;
+}
+
+.review-card .rating {
+	font-size: 0.9rem;
+	color: #ffc107;
+	margin: 5px 0;
+}
+
+.review-card p {
+	margin: 0;
+	color: #444;
+	font-size: 0.95rem;
+	line-height: 1.5;
+}
+
+.flash-error, .success {
+	padding: 10px 15px;
+	border-radius: 6px;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.flash-error {
+	background-color: #f8d7da;
+	color: #a94442;
+}
+
+.success {
+	background-color: #d4edda;
+	color: #155724;
+}
+
+/* Responsive Touches */
+@media (max-width: 768px) {
+	.item-display {
+		padding: 20px;
+	}
+	.review-form, .review-card {
+		padding: 15px;
+	}
+}
+
+.star-rating {
+        direction: rtl;
+        display: inline-flex;
+        font-size: 1.5rem;
+        justify-content: center;
+    }
+
+    .star-rating input[type="radio"] {
+        display: none;
+    }
+
+    .star-rating label {
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .star-rating input[type="radio"]:checked ~ label {
+        color: #ffc107;
+    }
+
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #ffc107;
+    }

@@ -73,8 +73,8 @@
             </div>
             <div class="col-lg-6">
                 <div class="card shadow-lg rounded-4 p-4">
-                    <h5 class="card-title text-center mb-4">📊 User Sentiment Chart</h5>
-                    <canvas id="userSentimentChart" height="300"></canvas>
+                    <h5 class="card-title text-center mb-4">📊 Review Ratings Overview</h5>
+                    <canvas id="ratingChart" height="300"></canvas>
                 </div>
             </div>
         </div>
@@ -150,46 +150,31 @@ const userNeg = {{ user_neg | tojson }};
 });
 
 
-        //new chart
-         const ctx = document.getElementById('userSentimentChart').getContext('2d');
 
-    new Chart(ctx, {
+    const ctx = document.getElementById('ratingChart').getContext('2d');
+    const ratingChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: userLabels,
-            datasets: [
-                {
-                    label: 'Positive Reviews',
-                    data: userPos,
-                    backgroundColor: 'rgba(75, 192, 192, 0.7)'
-                },
-                {
-                    label: 'Negative Reviews',
-                    data: userNeg,
-                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
-                }
-            ]
+            labels: ['1 ★', '2 ★', '3 ★', '4 ★', '5 ★'],
+            datasets: [{
+                label: 'Number of Reviews',
+                data: {{ rating_data | tojson }},
+                backgroundColor: [
+                    '#ff4d4d', '#ffa64d', '#ffff4d', '#85e085', '#4da6ff'
+                ],
+                borderWidth: 1
+            }]
         },
         options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'top' },
-                title: {
-                    display: true,
-                    text: 'User-wise Sentiment Analysis'
-                }
-            },
             scales: {
-                x: {
-                    stacked: true,
-                    title: { display: true, text: 'Users' }
-                },
                 y: {
-                    stacked: true,
-                    title: { display: true, text: 'Number of Reviews' }
+                    beginAtZero: true,
+                    precision: 0
                 }
             }
         }
     });
+
+
     </script>
 {% endblock %}

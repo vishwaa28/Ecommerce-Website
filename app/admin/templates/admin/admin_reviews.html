@@ -15,6 +15,8 @@
             <th>Created At</th>
             <th>Fake Review</th>
             <th>Sentiment</th>
+            <th>Operations</th>
+
         </tr>
     </thead>
     <tbody>
@@ -28,6 +30,13 @@
             <td>{{ review.created_at }}</td>
             <td><span class="badge bg-{{ 'danger' if review.result == 'Fake' else 'success' }}">{{ review.result }}</span></td>
             <td>{{ review.sentiment }}</td>
+            <td>
+    {% if review.result == 'Fake' %}
+        <a href="{{ url_for('admin.delete_review', id=review.id) }}" title="Delete Fake Review">&#10060;</a>
+    {% else %}
+        <span class="text-muted">N/A</span>
+    {% endif %}
+</td>
         </tr>
         {% endfor %}
 

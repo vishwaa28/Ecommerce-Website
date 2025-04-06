@@ -1,82 +1,97 @@
 {% extends "base.html" %}
 
 {% block title %}
-	{{ item.name }} - Flask-O-shop
+{{ item.name }} - Flask-O-shop
 {% endblock %}
 
 {% block content %}
-	{% with msgs =  get_flashed_messages(with_categories=True) %}
-	{% for c, msg in msgs %}
-		{% if c == 'error' %}
-			<div class="flash-error">
-		{% else %}
-			<div class="success">
-		{% endif %}
-			{{ msg | safe}}</div><br>
-	{% endfor %}
-	{% endwith %}
+{% with msgs =  get_flashed_messages(with_categories=True) %}
+{% for c, msg in msgs %}
+{% if c == 'error' %}
+<div class="flash-error">
+    {% else %}
+    <div class="success">
+        {% endif %}
+        {{ msg | safe}}
+    </div>
+    <br>
+    {% endfor %}
+    {% endwith %}
 
-			<div class="item-display">
-				<div class="img-wrapper">
-					<img src="{{ item.image }}" class="pic">
-				</div>
-				<b>{{ item.name }}</b>
-				<span class="right-item">${{ item.price }}</span><br>
-                <i class="fa fa-star checked"></i>
-                <i class="fa fa-star checked"></i>
-                <i class="fa fa-star checked"></i>
-                <i class="fa fa-star checked"></i>
-                <i class="fa fa-star checked"></i>
-                <span class="text-muted" >({{ range(1, 51) | random }})</span>
-                <div class="details">{{ item.details | safe }}</div>
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Left: Product Image -->
+            <div class="col-md-5 text-center">
+                <img src="{{ item.image }}" class="img-fluid rounded shadow" alt="{{ item.name }}">
+            </div>
+
+            <!-- Right: Details + Cart -->
+            <div class="col-md-7">
+                <h3>{{ item.name }}</h3>
+                <h4 class="text-success">₹{{ item.price }}</h4>
+
+                <div class="mb-2">
+                    {% for _ in range(1, 6) %}
+                    <i class="fa fa-star checked text-warning"></i>
+                    {% endfor %}
+                    <span class="text-muted">({{ range(1, 51) | random }})</span>
+                </div>
+
+                <div class="mb-3">
+                    <p>{{ item.details | safe }}</p>
+                </div>
 
                 <form action="{{ url_for('add_to_cart', id=item.id) }}" method="POST">
-                    Quantity: 
-                    <input type="number" value="1" name="quantity" min="1" max="50" onkeyup="if(this.value > 50) this.value=50;" required>
-                    <br><br>
-					<input type="submit" class="add-to-cart" value="Add to Cart" name="add">
+                    <div class="mb-3">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="50"
+                               class="form-control w-25 d-inline-block" required
+                               onkeyup="if(this.value > 50) this.value=50;">
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Add to Cart" name="add">
                 </form>
-
-
-				 <div class="review-form mt-5">
-                <h4 class="text-center">Leave a Review</h4>
-               <form id="reviewForm" action="{{ url_for('submit_review') }}" method="POST">
-    <input type="hidden" name="item_id" value="{{ item.id }}"> <!-- Store the item ID -->
-
-    <div class="mb-3">
-        <label for="name" class="form-label">Your Name</label>
-        <input type="text" id="name" name="name" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="review" class="form-label">Your Review</label>
-        <textarea id="review" name="review" class="form-control" rows="4" required></textarea>
-    </div>
-    <div class="mb-2 text-center">
-        <label class="d-block mb-1">Rate this product:</label>
-        <div class="btn-group" role="group">
-            <input type="radio" class="btn-check" name="rating" id="star1" value="1" checked>
-            <label class="btn btn-outline-warning" for="star1">1 ★</label>
-
-            <input type="radio" class="btn-check" name="rating" id="star2" value="2">
-            <label class="btn btn-outline-warning" for="star2">2 ★</label>
-
-            <input type="radio" class="btn-check" name="rating" id="star3" value="3">
-            <label class="btn btn-outline-warning" for="star3">3 ★</label>
-
-            <input type="radio" class="btn-check" name="rating" id="star4" value="4">
-            <label class="btn btn-outline-warning" for="star4">4 ★</label>
-
-            <input type="radio" class="btn-check" name="rating" id="star5" value="5">
-            <label class="btn btn-outline-warning" for="star5">5 ★</label>
+            </div>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary w-100">Submit Review</button>
-</form>
 
+
+    <div class="review-form mt-5">
+        <h4 class="text-center">Leave a Review</h4>
+        <form id="reviewForm" action="{{ url_for('submit_review') }}" method="POST">
+            <input type="hidden" name="item_id" value="{{ item.id }}"> <!-- Store the item ID -->
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Your Name</label>
+                <input type="text" id="name" name="name" class="form-control" required>
             </div>
-                <div class="reviews mt-5">
-    <h4>Customer Reviews</h4>
-    {% for review in item.reviews %}
+            <div class="mb-3">
+                <label for="review" class="form-label">Your Review</label>
+                <textarea id="review" name="review" class="form-control" rows="4" required></textarea>
+            </div>
+            <div class="mb-2 text-center">
+                <label class="d-block mb-1">Rate this product:</label>
+                <div class="star-rating">
+                    <div class="btn-group" role="group">
+                        <input type="radio" name="rating" id="star1" value="5" checked>
+                        <label for="star1">5 ★</label>
+                        <input type="radio" name="rating" id="star2" value="4">
+                        <label for="star2">4 ★</label>
+                        <input type="radio" name="rating" id="star3" value="3">
+                        <label for="star3">3 ★</label>
+                        <input type="radio" name="rating" id="star4" value="2">
+                        <label for="star4">2 ★</label>
+                        <input type="radio" name="rating" id="star5" value="1">
+                        <label for="star5">1 ★</label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+        </form>
+
+    </div>
+    <div class="reviews mt-5">
+        <h4>Customer Reviews</h4>
+        {% for review in item.reviews %}
         <div class="review-card">
             <strong>{{ review.user.name }}</strong>
             <span class="text-muted">({{ review.created_at.strftime('%Y-%m-%d') }})</span>
@@ -84,8 +99,8 @@
             <p>{{ review.review_text }}</p>
         </div>
         <hr>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
-			</div>
-            </div>
+
 {% endblock %}

@@ -14,6 +14,7 @@ from transformers import BertTokenizer, BertModel
 import string
 from collections import defaultdict
 import calendar
+from collections import Counter
 
 admin = Blueprint("admin", __name__, url_prefix="/admin", static_folder="static", template_folder="templates")
 
@@ -61,6 +62,7 @@ def analyze_review(review_text, rating):
 @admin.route("/admin/reviews")
 def admin_reviews():
     reviews = Review.query.all()
+
     analyzed_reviews = []
 
     for review in reviews:
@@ -85,6 +87,8 @@ def dashboard():
     analyzed_reviews = []
     monthly_review_data = defaultdict(int)
     user_sentiment_counts = defaultdict(lambda: {'Positive': 0, 'Negative': 0})
+    rating_counts = Counter([r.rating for r in reviews])
+    rating_data = [rating_counts.get(i, 0) for i in range(1, 6)]  # 1★ to 5★
 
     for review in reviews:
         result, sentiment = analyze_review(review.review_text, review.rating)
@@ -114,7 +118,9 @@ def dashboard():
     return render_template("admin/home.html", analyzed_reviews=analyzed_reviews,monthly_data=all_months,
                         user_labels=user_labels,
                        user_pos=user_pos,
-                       user_neg=user_neg)
+                       user_neg=user_neg,
+                           rating_data=rating_data
+                           )
 
 # @admin.route('/')
 # @admin_only
@@ -184,9 +190,21 @@ def edit(type, id):
 @admin_only
 def delete(id):
     to_delete = Item.query.get(id)
+    for review in to_delete.reviews:
+        db.session.delete(review)
     db.session.delete(to_delete)
     db.session.commit()
     flash(f'{to_delete.name} deleted successfully', 'error')
     return redirect(url_for('admin.items'))
+
+@admin.route('/delete_review/<int:id>')
+@admin_only
+def delete_review(id):
+    to_delete = Review.query.get_or_404(id)
+    db.session.delete(to_delete)
+    db.session.commit()
+    flash(f'Review "{to_delete.review_text}" deleted successfully', 'error')
+    return redirect(url_for('admin.admin_reviews'))
+
 
 

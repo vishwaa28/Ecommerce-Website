@@ -37,6 +37,8 @@ class Item(db.Model):
 	price_id = db.Column(db.String(250), nullable=False)
 	orders = db.relationship("Ordered_item", backref="item")
 	in_cart = db.relationship("Cart", backref="item")
+	reviews = db.relationship('Review', backref='item', cascade='all, delete-orphan')
+
 
 class Cart(db.Model):
 	__tablename__ = "cart"
@@ -70,7 +72,6 @@ class Review(db.Model):
 	rating = db.Column(db.Integer, nullable=False)
 	created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 	user = db.relationship("User", backref="reviews")
-	item = db.relationship("Item", backref="reviews")
 
 	def add_review(user_id, item_id, review_text, rating):
 		new_review = Review(user_id=user_id, item_id=item_id, review_text=review_text, rating=rating)
