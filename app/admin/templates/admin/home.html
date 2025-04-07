@@ -13,13 +13,13 @@
         {% endfor %}
     {% endwith %}
 
-    <div class="container-fluid py-4 px-5" style="background: #f8f9fa; min-height: 100vh;">
+    <div class="container-fluid py-4 px-5" style="background: #f6ddcc; min-height: 100vh;">
         <h2 class="text-center mb-5" style="font-weight: 700; color: #343a40;">📊 E-commerce Review Intelligence Dashboard</h2>
 
         <!-- Summary Cards -->
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="card text-white bg-primary shadow rounded-4">
+                <div class="card text-white bg-primary shadow rounded-7">
                     <div class="card-body text-center">
                         <h5>Total Reviews</h5>
                         <h2>{{ analyzed_reviews | length }}</h2>
@@ -28,7 +28,7 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card text-white bg-success shadow rounded-4">
+                <div class="card text-white bg-success shadow rounded-7">
                     <div class="card-body text-center">
                         <h5>Original Reviews</h5>
                         <h2>{{ analyzed_reviews | selectattr("result", "equalto", "Original") | list | length }}</h2>
@@ -37,7 +37,7 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card text-white bg-danger shadow rounded-4">
+                <div class="card text-white bg-danger shadow rounded-7">
                     <div class="card-body text-center">
                         <h5>Fake Reviews</h5>
                         <h2>{{ analyzed_reviews | selectattr("result", "equalto", "Fake") | list | length }}</h2>
@@ -49,16 +49,16 @@
         <!-- Chart Section -->
         <div class="row mt-5 g-4">
             <div class="col-lg-6">
-                <div class="card shadow-lg rounded-4 p-4">
+                <div class="card shadow-lg rounded-10 p-4">
                     <h5 class="card-title text-center mb-4">🕵️ Fake vs Original Reviews</h5>
-                    <canvas id="reviewChart" height="300"></canvas>
+                    <canvas id="reviewChart" width="400" height="300"></canvas>
                 </div>
             </div>
 
             <div class="col-lg-6">
-                <div class="card shadow-lg rounded-4 p-4">
+                <div class="card shadow-lg rounded-10 p-4">
                     <h5 class="card-title text-center mb-4">😊 Sentiment Analysis</h5>
-                    <canvas id="sentimentChart" height="300"></canvas>
+                    <canvas id="sentimentChart" width="400"  height="300"></canvas>
                 </div>
             </div>
         </div>
@@ -66,15 +66,15 @@
         <!-- Additional Visuals -->
         <div class="row mt-5 g-4">
             <div class="col-lg-6">
-                <div class="card shadow-lg rounded-4 p-4">
+                <div class="card shadow-lg rounded-10 p-4">
                     <h5 class="card-title text-center mb-4">📈 Monthly Review Trend</h5>
-                    <canvas id="trendChart" height="300"></canvas>
+                    <canvas id="trendChart" width="400"  height="300"></canvas>
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="card shadow-lg rounded-4 p-4">
+                <div class="card shadow-lg rounded-10 p-4">
                     <h5 class="card-title text-center mb-4">📊 Review Ratings Overview</h5>
-                    <canvas id="ratingChart" height="300"></canvas>
+                    <canvas id="ratingChart" width="400"  height="300"></canvas>
                 </div>
             </div>
         </div>

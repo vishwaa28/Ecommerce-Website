@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-	Cart - Flask-O-shop
+	Cart - Ecommerce Website
 {% endblock %}
 <script src="https://js.stripe.com/v3/"></script>
 {% block content %}
@@ -33,11 +33,11 @@
 				<img src="{{ items[i].image }}" class="pic">
 			</div>
 			<b>{{ items[i].name }}</b>
-			<span class="right-item">${{ items[i].price }}</span><br>
+			<span class="right-item">₹{{ items[i].price }}</span><br>
 			Quantity: 
 			<span class="right-item">{{ quantity[i] }}</span><br>
 			Total:
-			<span class="right-item">${{ quantity[i]*items[i].price }}</span>
+			<span class="right-item">₹{{ quantity[i]*items[i].price }}</span>
 			<br><br>
 			<a href="{{ url_for('remove', id=items[i].id, quantity=quantity[i]) }}">
 				<button class="remove-from-cart"> Remove from Cart </button>
